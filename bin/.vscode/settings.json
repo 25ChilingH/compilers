@@ -1,0 +1,9 @@
+{
+    "java.project.sourcePaths": ["./"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar"
+    ],
+    "java.checkstyle.version": "8.29",
+    "java.checkstyle.configuration": "${workspaceFolder}/apcs.xml",
+}
