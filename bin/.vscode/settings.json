@@ -6,4 +6,5 @@
     ],
     "java.checkstyle.version": "8.29",
     "java.checkstyle.configuration": "${workspaceFolder}/apcs.xml",
+    "java.compile.nullAnalysis.mode": "automatic",
 }
