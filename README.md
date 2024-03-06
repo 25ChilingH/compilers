@@ -4,10 +4,11 @@ This repository is written with Java. It holds the code for the class I took in 
 ## Running Code
 To change to the directory of interest, open the terminal and type
 ```
-cd DIRECTORY_TO_RUN
+cd compilers
 ```
 
 Then type
 ```
-java FILE_NAME_TO_RUN
+javac DIRECTORY_NAME_TO_RUN/FILE_NAME_TO_RUN.java
+java DIRECTORY_NAME_TO_RUN/FILE_NAME_TO_RUN
 ```

@@ -27,7 +27,7 @@ public class ScannerJFlexTester
         File file = new File((args.length > 0) ? args[0] : FILE_PATH);
         FileReader in = new FileReader(file);
 
-        Scanner scan = new Scanner(in);
+        JFlexScanner scan = new JFlexScanner(in);
         String token = scan.nextToken();
         while (!scan.yyatEOF())
         {

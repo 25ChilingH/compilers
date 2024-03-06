@@ -27,7 +27,7 @@ public class ScannerTester
         File file = new File((args.length > 0) ? args[0] : FILE_PATH);
         FileInputStream in = new FileInputStream(file);
 
-        ScannerOriginal scan = new ScannerOriginal(in);
+        Scanner scan = new Scanner(in);
         String token = scan.nextToken();
         while (scan.hasNext())
         {
