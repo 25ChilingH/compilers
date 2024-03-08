@@ -81,8 +81,8 @@ public class Scanner
     {
         if (currentChar != expected)
         {
-            throw new ScanErrorException("Illegal character: expected <" + currentChar
-                    + "> and found <" + expected + ">");
+            throw new ScanErrorException("Illegal character: expected <" + expected
+                    + "> and found <" + currentChar + ">");
         }
         else
         {
@@ -171,7 +171,7 @@ public class Scanner
      */
     public static boolean isOperand(char c)
     {
-        char[] operands = {'>', ':', '<', '=', '+', '-', '*', '/', '%', '(', ')' };
+        char[] operands = {'>', ':', '<', '=', '+', '-', '*', '/', '%', '(', ')', ';'};
         for (char op : operands)
         {
             if (op == c)
