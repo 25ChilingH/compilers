@@ -5,7 +5,11 @@ import scanner.Scanner;
 import java.io.*;
 
 /**
+ * ParserTester is the tester for the Parser class by parsing a .txt file and converting source
+ * code into a format a machine can understand
  * 
+ * @author Chiling Han
+ * @version 11 March 2024
  */
 public class ParserTester
 {
@@ -16,10 +20,10 @@ public class ParserTester
     public static final String FILE_PATH = "./parser/parserTest4.txt";
 
     /**
-     * 
-     * @param args
-     * @throws IOException
-     * @throws ScanErrorException
+     * Main method that will run the tester on the Parser class
+     * @param args command line arguments; if present, the first String is the custom file path
+     * @throws IOException if file path is not found
+     * @throws ScanErrorException if Scanner encounters an unrecognized or illegal character
      */
     public static void main(String[] args) throws IOException, ScanErrorException
     {
