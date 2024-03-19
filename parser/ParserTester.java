@@ -4,6 +4,8 @@ import scanner.ScanErrorException;
 import scanner.Scanner;
 import java.io.*;
 
+import environment.Environment;
+
 /**
  * ParserTester is the tester for the Parser class by parsing a .txt file and converting source
  * code into a format a machine can understand
@@ -17,7 +19,7 @@ public class ParserTester
     /**
      * Default file path to parse
      */
-    public static final String FILE_PATH = "./parser/parserTest4.txt";
+    public static final String FILE_PATH = "./parser/parserTest6.txt";
 
     /**
      * Main method that will run the tester on the Parser class
@@ -32,9 +34,10 @@ public class ParserTester
 
         Scanner scan = new Scanner(in);
         Parser parser = new Parser(scan);
+        Environment env = new Environment();
         while (scan.hasNext())
         {
-            parser.parseStatement();
+            parser.parseStatement().exec(env);
         }
     }
 }

@@ -1,8 +1,10 @@
 package parser;
 
 import scanner.*;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.ArrayList;
+
+import ast.*;
+import ast.Number;
 
 /**
  * Parser is a simple parser for the class Compilers and Interpreters. Processes a text input
@@ -19,7 +21,6 @@ public class Parser
 {
     private Scanner scan;
     private String currToken;
-    private Map<String, Integer> variables;
 
     /**
      * Parser constructor for construction of a parser that
@@ -37,7 +38,6 @@ public class Parser
     {
         this.scan = scan;
         currToken = scan.nextToken();
-        variables = new HashMap<String, Integer>();
     }
 
     /**
@@ -67,11 +67,11 @@ public class Parser
      * @throws ScanErrorException if the expected character does not match
      *                            the current character
      */
-    private int parseNumber() throws ScanErrorException
+    private Expression parseNumber() throws ScanErrorException
     {
         int num = Integer.parseInt(currToken);
         eat(currToken);
-        return num;
+        return new Number(num);
     }
 
     /**
@@ -81,30 +81,29 @@ public class Parser
      * @throws ScanErrorException if the expected character does not match
      *                            the current character
      */
-    public int parseFactor() throws ScanErrorException
+    public Expression parseFactor() throws ScanErrorException
     {
         if (currToken.equals("("))
         {
             eat("(");
-            int num = parseExpr();
+            Expression num = parseExpr();
             eat(")");
             return num;
         }
         else if (currToken.equals("-"))
         {
             eat("-");
-            return -1 * parseFactor();
+            return new BinOp("*", new Number(-1), parseFactor());
+        }
+        else if (Scanner.isDigit(currToken.charAt(0)))
+        {
+            return parseNumber();
         }
         else
         {
-            Integer val = variables.get(currToken);
-            if (val != null)
-            {
-                eat(currToken);
-                return val;
-            }
-            return parseNumber();
-
+            Variable var = new Variable(currToken);
+            eat(currToken);
+            return var;
         }
 
     }
@@ -116,20 +115,20 @@ public class Parser
      * @throws ScanErrorException if the expected character does not match
      *                            the current character
      */
-    public int parseExpr() throws ScanErrorException
+    public Expression parseExpr() throws ScanErrorException
     {
-        int res = parseTerm();
+        Expression res = parseTerm();
         while (currToken.equals("+") || currToken.equals("-"))
         {
             if (currToken.equals("+"))
             {
                 eat("+");
-                res += parseTerm();
+                res = new BinOp("+", res, parseTerm());
             }
             else if (currToken.equals("-"))
             {
                 eat("-");
-                res -= parseTerm();
+                res = new BinOp("-", res, parseTerm());
             }
         }
         return res;
@@ -143,20 +142,20 @@ public class Parser
      * @throws ScanErrorException if the expected character does not match
      *                            the current character
      */
-    private int parseTerm() throws ScanErrorException
+    private Expression parseTerm() throws ScanErrorException
     {
-        int res = parseFactor();
+        Expression res = parseFactor();
         while (currToken.equals("*") || currToken.equals("/"))
         {
             if (currToken.equals("*"))
             {
                 eat("*");
-                res *= parseFactor();
+                res = new BinOp("*", res, parseFactor());
             }
             else if (currToken.equals("/"))
             {
                 eat("/");
-                res /= parseFactor();
+                res = new BinOp("/", res, parseFactor());
             }
         }
         return res;
@@ -170,37 +169,63 @@ public class Parser
      * value in a hashmap.
      * @precondition current token is a Pascal code statement
      * @postcondition code statement has been eaten
+     * @return statement that has been parsed
      * @throws ScanErrorException if the expected character does not match
      *                            the current character
      */
-    public void parseStatement() throws ScanErrorException
+    public Statement parseStatement() throws ScanErrorException
     {
         if (currToken.equals("WRITELN"))
         {
             eat("WRITELN");
             eat("(");
-            System.out.println(parseExpr());
+            Expression exp = parseExpr();
             eat(")");
             eat(";");
+            return new Writeln(exp);
         }
         else if (currToken.equals("BEGIN"))
         {
+            ArrayList<Statement> list = new ArrayList<>();
             eat("BEGIN");
             while (!currToken.equals("END"))
             {
-                parseStatement();
+                list.add(parseStatement());
             }
             eat("END");
             eat(";");
+            return new Block(list);
+        }
+        else if (currToken.equals("IF"))
+        {
+            eat("IF");
+            Expression exp1 = parseExpr();
+            String relop = currToken;
+            eat(currToken);
+            Expression exp2 = parseExpr();
+            eat("THEN");
+            Statement stmt = parseStatement();
+            return new If(new Condition(relop, exp1, exp2), stmt);
+        }
+        else if (currToken.equals("WHILE"))
+        {
+            eat("WHILE");
+            Expression exp1 = parseExpr();
+            String relop = currToken;
+            eat(currToken);
+            Expression exp2 = parseExpr();
+            eat("DO");
+            Statement stmt = parseStatement();
+            return new While(new Condition(relop, exp1, exp2), stmt);
         }
         else
         {
             String key = currToken;
             eat(currToken);
             eat(":=");
-            int val = parseExpr();
+            Expression val = parseExpr();
             eat(";");
-            variables.put(key, val);
+            return new Assignment(key, val);
         }
     }
 }
