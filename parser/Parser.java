@@ -177,55 +177,118 @@ public class Parser
     {
         if (currToken.equals("WRITELN"))
         {
-            eat("WRITELN");
-            eat("(");
-            Expression exp = parseExpr();
-            eat(")");
-            eat(";");
-            return new Writeln(exp);
+            return (Statement) parseWriteln();
         }
         else if (currToken.equals("BEGIN"))
         {
-            ArrayList<Statement> list = new ArrayList<>();
-            eat("BEGIN");
-            while (!currToken.equals("END"))
-            {
-                list.add(parseStatement());
-            }
-            eat("END");
-            eat(";");
-            return new Block(list);
+            return (Block) parseBlock();
         }
         else if (currToken.equals("IF"))
         {
-            eat("IF");
-            Expression exp1 = parseExpr();
-            String relop = currToken;
-            eat(currToken);
-            Expression exp2 = parseExpr();
-            eat("THEN");
-            Statement stmt = parseStatement();
-            return new If(new Condition(relop, exp1, exp2), stmt);
+            return (Statement) parseIf();
         }
         else if (currToken.equals("WHILE"))
         {
-            eat("WHILE");
-            Expression exp1 = parseExpr();
-            String relop = currToken;
-            eat(currToken);
-            Expression exp2 = parseExpr();
-            eat("DO");
-            Statement stmt = parseStatement();
-            return new While(new Condition(relop, exp1, exp2), stmt);
+            return (Statement) parseWhile();
+        }
+        else if (currToken.equals("FOR"))
+        {
+            return (Statement) parseFor();
+        }
+        else if (currToken.equals("READLN"))
+        {
+            return (Statement) parseReadln();
         }
         else
         {
-            String key = currToken;
-            eat(currToken);
-            eat(":=");
-            Expression val = parseExpr();
-            eat(";");
-            return new Assignment(key, val);
+            return (Statement) parseAssignment(false);
         }
+    }
+
+    public Readln parseReadln() throws ScanErrorException
+    {
+        eat("READLN");
+        eat("(");
+        String var = currToken;
+        eat(currToken);
+        eat(")");
+        eat(";");
+        return new Readln(var);
+    }
+
+    public For parseFor() throws ScanErrorException
+    {
+        eat("FOR");
+        Assignment assign = parseAssignment(true);
+        eat("TO");
+        Expression check = parseExpr();
+        eat("DO");
+        Statement block = parseStatement();
+        return new For(assign, check, block);
+    }
+
+    public Writeln parseWriteln() throws ScanErrorException
+    {
+        eat("WRITELN");
+        eat("(");
+        Expression exp = parseExpr();
+        eat(")");
+        eat(";");
+        return new Writeln(exp);
+    }
+
+    public Block parseBlock() throws ScanErrorException
+    {
+        ArrayList<Statement> list = new ArrayList<>();
+        eat("BEGIN");
+        while (!currToken.equals("END"))
+        {
+            list.add(parseStatement());
+        }
+        eat("END");
+        eat(";");
+        return new Block(list);
+    }
+
+    public If parseIf() throws ScanErrorException
+    {
+        eat("IF");
+        Expression exp1 = parseExpr();
+        String relop = currToken;
+        eat(currToken);
+        Expression exp2 = parseExpr();
+        eat("THEN");
+        Statement stmt = parseStatement();
+        if (currToken.equals("ELSE"))
+        {
+            eat("ELSE");
+            Statement stmt2 = parseStatement();
+            return new If(new Condition(relop, exp1, exp2), stmt, stmt2);
+        }
+        return new If(new Condition(relop, exp1, exp2), stmt);
+    }
+
+    
+    public While parseWhile() throws ScanErrorException
+    {
+        eat("WHILE");
+        Expression exp1 = parseExpr();
+        String relop = currToken;
+        eat(currToken);
+        Expression exp2 = parseExpr();
+        eat("DO");
+        Statement stmt = parseStatement();
+        return new While(new Condition(relop, exp1, exp2), stmt);
+    }
+
+    public Assignment parseAssignment(boolean forLoop) throws ScanErrorException
+    {
+        String key = currToken;
+        eat(currToken);
+        eat(":=");
+        Expression val = parseExpr();
+        if (!forLoop)
+            eat(";");
+        return new Assignment(key, val);
     }
 }

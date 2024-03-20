@@ -1,5 +1,5 @@
 BEGIN
-	x := 2;
+	READLN(x);
 	y := x + 1;
 	x := x + y;
 	WRITELN(x * y);
@@ -8,11 +8,22 @@ BEGIN
 		WRITELN(x);
 		WRITELN(y);
 	END;
+	ELSE
+	BEGIN
+		WRITELN(x);
+	END;
 	x := 0;
 	WHILE x < 10 DO
 	BEGIN
 		WRITELN(x);
 		x := x + 1;
+	END;
+
+	sum := 0;
+	FOR i:= 3 TO 1 DO
+	BEGIN
+		sum := sum + i;
+		WRITELN(sum);
 	END;
 	
 END;

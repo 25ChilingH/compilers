@@ -17,4 +17,9 @@ public class Assignment extends Statement
     {
         env.setVariable(var, exp.eval(env));
     }
+
+    public String getVariable()
+    {
+        return var;
+    }
 }
