@@ -164,9 +164,8 @@ public class Parser
 
 
     /**
-     * Prints out the parsed expression if there is a WRITELN(expr). Navigates
-     * through BEGIN and END blocks. Stores variable and its corresponding
-     * value in a hashmap.
+     * Parses a statement, including WRITELN, BEGIN/END blocks, IF/ELSE statements,
+     * WHILE loops, FOR loops, READLN, and variable assignments.
      * @precondition current token is a Pascal code statement
      * @postcondition code statement has been eaten
      * @return statement that has been parsed
@@ -205,6 +204,12 @@ public class Parser
         }
     }
 
+    /**
+     * 
+     * @return statement representing a Readln statement
+     * @throws ScanErrorException if the expected character does not match
+     *                            the current character
+     */
     public Readln parseReadln() throws ScanErrorException
     {
         eat("READLN");
@@ -216,6 +221,12 @@ public class Parser
         return new Readln(var);
     }
 
+    /**
+     * 
+     * @return statement representing a For loop
+     * @throws ScanErrorException if the expected character does not match
+     *                            the current character
+     */
     public For parseFor() throws ScanErrorException
     {
         eat("FOR");
@@ -227,6 +238,12 @@ public class Parser
         return new For(assign, check, block);
     }
 
+    /**
+     * 
+     * @return statement representing a Writeln statement
+     * @throws ScanErrorException if the expected character does not match
+     *                            the current character
+     */
     public Writeln parseWriteln() throws ScanErrorException
     {
         eat("WRITELN");
@@ -237,6 +254,12 @@ public class Parser
         return new Writeln(exp);
     }
 
+    /**
+     * 
+     * @return statement representing a Block statement
+     * @throws ScanErrorException if the expected character does not match
+     *                            the current character
+     */
     public Block parseBlock() throws ScanErrorException
     {
         ArrayList<Statement> list = new ArrayList<>();
@@ -250,6 +273,12 @@ public class Parser
         return new Block(list);
     }
 
+    /**
+     * 
+     * @return statement representing an If/Else statement
+     * @throws ScanErrorException if the expected character does not match
+     *                            the current character
+     */
     public If parseIf() throws ScanErrorException
     {
         eat("IF");
@@ -268,7 +297,12 @@ public class Parser
         return new If(new Condition(relop, exp1, exp2), stmt);
     }
 
-    
+    /**
+     * 
+     * @return statement representing a While loop statement
+     * @throws ScanErrorException if the expected character does not match
+     *                            the current character
+     */
     public While parseWhile() throws ScanErrorException
     {
         eat("WHILE");
@@ -281,6 +315,13 @@ public class Parser
         return new While(new Condition(relop, exp1, exp2), stmt);
     }
 
+    /**
+     * 
+     * @param forLoop if the assignment is within a For loop
+     * @return statement representing an Assignment statement
+     * @throws ScanErrorException if the expected character does not match
+     *                            the current character
+     */
     public Assignment parseAssignment(boolean forLoop) throws ScanErrorException
     {
         String key = currToken;
