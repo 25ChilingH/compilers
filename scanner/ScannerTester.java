@@ -14,7 +14,7 @@ public class ScannerTester
     /**
      * Default file path to retrieve tokens from
      */
-    public static final String FILE_PATH = "./scanner/ScannerTest.txt";
+    public static final String FILE_PATH = "./scanner/ScannerTestAdvanced.txt";
 
     /**
      * Main method that will run the tester on the Scanner class

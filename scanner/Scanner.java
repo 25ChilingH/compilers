@@ -149,7 +149,7 @@ public class Scanner
         if (eof)
             return "EOF";
         else
-            return "";
+            return nextToken();
     }
 
     /**
@@ -234,7 +234,7 @@ public class Scanner
         {
             eat(currentChar);
         }
-        return "";
+        return nextToken();
 
     }
 
