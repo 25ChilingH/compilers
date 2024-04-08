@@ -2,7 +2,6 @@
 // @author Ogden, Ian <24iano@students.harker.org>
 BEGIN
 	x := 3;
-	.
 	WRITELN(x + x);
 	FOR y := 1 TO 12 DO
 	BEGIN

@@ -2,6 +2,7 @@ package parser;
 
 import scanner.*;
 import java.util.ArrayList;
+import java.util.List;
 
 import ast.*;
 import ast.Number;
@@ -101,9 +102,20 @@ public class Parser
         }
         else
         {
-            Variable var = new Variable(currToken);
+            Expression exp;
+            String name = currToken;
             eat(currToken);
-            return var;
+            if (currToken.equals("("))
+            {
+                exp = new ProcedureCall(name);
+                eat("(");
+                eat(")");
+            }
+            else
+            {
+                exp = new Variable(name);
+            }
+            return exp;
         }
 
     }
@@ -331,5 +343,28 @@ public class Parser
         if (!forLoop)
             eat(";");
         return new Assignment(key, val);
+    }
+
+    public Program parseProgram() throws ScanErrorException
+    {
+        List<ProcedureDeclaration> procedures = new ArrayList<>();
+        while (currToken.equals("PROCEDURE"))
+        {
+            eat("PROCEDURE");
+            String procedureName = currToken;
+            eat(currToken);
+            eat("(");
+            if (!currToken.equals(")"))
+            {
+                
+            }
+            eat(")");
+            eat(";");
+            Statement procedureStmt = parseStatement();
+            procedures.add(new ProcedureDeclaration(procedureName, procedureStmt));
+
+        }
+        Statement stmt = parseStatement();
+        return new Program(procedures, stmt);
     }
 }

@@ -171,7 +171,7 @@ public class Scanner
      */
     public static boolean isOperand(char c)
     {
-        char[] operands = {'>', ':', '<', '=', '+', '-', '*', '/', '%', '(', ')', ';'};
+        char[] operands = {'>', ':', '<', '=', '+', '-', '*', '/', '%', '(', ')', ';', ','};
         for (char op : operands)
         {
             if (op == c)

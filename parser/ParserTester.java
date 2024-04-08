@@ -19,7 +19,7 @@ public class ParserTester
     /**
      * Default file path to parse
      */
-    public static final String FILE_PATH = "./parser/parserTest4.5ForLoopReadln.txt";
+    public static final String FILE_PATH = "./parser/parserTest7.txt";
 
     /**
      * Main method that will run the tester on the Parser class
@@ -35,9 +35,6 @@ public class ParserTester
         Scanner scan = new Scanner(in);
         Parser parser = new Parser(scan);
         Environment env = new Environment();
-        while (scan.hasNext())
-        {
-            parser.parseStatement().exec(env);
-        }
+        parser.parseProgram().exec(env);
     }
 }
