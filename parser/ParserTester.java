@@ -19,7 +19,7 @@ public class ParserTester
     /**
      * Default file path to parse
      */
-    public static final String FILE_PATH = "./parser/parserTest7.txt";
+    public static final String FILE_PATH = "./parser/parserTest8.txt";
 
     /**
      * Main method that will run the tester on the Parser class
@@ -34,7 +34,7 @@ public class ParserTester
 
         Scanner scan = new Scanner(in);
         Parser parser = new Parser(scan);
-        Environment env = new Environment();
+        Environment env = new Environment(null);
         parser.parseProgram().exec(env);
     }
 }

@@ -107,9 +107,19 @@ public class Parser
             eat(currToken);
             if (currToken.equals("("))
             {
-                exp = new ProcedureCall(name);
+                List<Expression> args = new ArrayList<>();
                 eat("(");
+                if (!currToken.equals(")"))
+                {
+                    args.add(parseExpr());
+                    while (!currToken.equals(")"))
+                    {
+                        eat(",");
+                        args.add(parseExpr());
+                    }
+                }
                 eat(")");
+                exp = new ProcedureCall(name, args);
             }
             else
             {
@@ -345,24 +355,51 @@ public class Parser
         return new Assignment(key, val);
     }
 
+    /**
+     * 
+     * @return statement representing the ProcedureDeclaration statement
+     * @throws ScanErrorException if the expected character does not match
+     *                            the current character
+     */
+    public ProcedureDeclaration parseProcedure() throws ScanErrorException
+    {
+        eat("PROCEDURE");
+        String procedureName = currToken;
+        eat(currToken);
+        eat("(");
+
+        List<String> params = new ArrayList<>();
+        if (!currToken.equals(")"))
+        {
+            params.add(currToken);
+            eat(currToken);
+            while (!currToken.equals(")"))
+            {
+                eat(",");
+                params.add(currToken);
+                eat(currToken);
+            }
+        }
+
+        eat(")");
+        eat(";");
+        Statement procedureStmt = parseStatement();
+        return new ProcedureDeclaration(procedureName, procedureStmt, params);
+    }
+
+    /**
+     * @return Program object that contains a list of procedure declarations and a 
+     *         parsed statement
+     *         
+     * @throws ScanErrorException if the expected character does not match
+     *                            the current character
+     */
     public Program parseProgram() throws ScanErrorException
     {
         List<ProcedureDeclaration> procedures = new ArrayList<>();
         while (currToken.equals("PROCEDURE"))
         {
-            eat("PROCEDURE");
-            String procedureName = currToken;
-            eat(currToken);
-            eat("(");
-            if (!currToken.equals(")"))
-            {
-                
-            }
-            eat(")");
-            eat(";");
-            Statement procedureStmt = parseStatement();
-            procedures.add(new ProcedureDeclaration(procedureName, procedureStmt));
-
+            procedures.add(parseProcedure());
         }
         Statement stmt = parseStatement();
         return new Program(procedures, stmt);

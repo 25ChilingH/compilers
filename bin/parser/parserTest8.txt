@@ -1,7 +1,9 @@
-PROCEDURE Add();
+PROCEDURE Add(y,w,z);
 BEGIN
-	WRITELN(x);
-	x := x + 2;
+	WRITELN(y);
+	WRITELN(w);
+	WRITELN(z);
+	x := x + y;
 END;
 
 BEGIN
@@ -20,8 +22,12 @@ BEGIN
 		WRITELN(x);
 		x := x + 1;
 	END;
-	ignore := Add();
+	WRITELN(y);
+	ignore := Add(4,x,y);
 	WRITELN(x);
 	
 END;
+.
+.
+.
 .
