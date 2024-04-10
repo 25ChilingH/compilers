@@ -17,7 +17,6 @@ BEGIN
 END;
 BEGIN
     x:=1;
-    y:=0;
     ignore:=foo(3);
     WRITELN(x);
     WRITELN(y);

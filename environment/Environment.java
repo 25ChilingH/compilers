@@ -71,9 +71,13 @@ public class Environment
     public int getVariable(String variable)
     {
         Environment global = this;
-        while (!global.hasVariable(variable))
+        while (global != null && !global.hasVariable(variable))
         {
             global = global.parent;
+        }
+        if (global == null)
+        {
+            return 0;
         }
         return global.variables.get(variable);
     }
@@ -93,12 +97,7 @@ public class Environment
      */
     public ProcedureDeclaration getProcedure(String procedureName)
     {
-        Environment global = this;
-        while (global.parent != null)
-        {
-            global = global.parent;
-        }
-        return global.procedures.get(procedureName);
+        return getGlobalEnvironment().procedures.get(procedureName);
     }
 
     /**
@@ -108,11 +107,20 @@ public class Environment
      */
     public void setProcedure(String procedureName, ProcedureDeclaration procedure)
     {
+        getGlobalEnvironment().procedures.put(procedureName, procedure);
+    }
+
+        /**
+     * Keeps going up the hierarchy until global environment reached
+     * @return the global environment
+     */
+    private Environment getGlobalEnvironment()
+    {
         Environment global = this;
         while (global.parent != null)
         {
             global = global.parent;
         }
-        global.procedures.put(procedureName, procedure);
+        return global;
     }
 }
