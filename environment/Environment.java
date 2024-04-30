@@ -51,15 +51,26 @@ public class Environment
      */
     public void setVariable(String variable, int value)
     {
+        Environment env = getHasVarEnvironment(variable);
+        if (env != null)
+            env.variables.put(variable, value);
+        else
+            variables.put(variable, value);
+    }
+
+    /**
+     * Keeps going up the hierarchy until environment with the variable stored is reached
+     * @param variable the variable to check if stored in environment
+     * @return the environment that has the variable stored
+     */
+    private Environment getHasVarEnvironment(String variable)
+    {
         Environment global = this;
         while (global != null && !global.hasVariable(variable))
         {
             global = global.parent;
         }
-        if (global != null)
-            global.variables.put(variable, value);
-        else
-            variables.put(variable, value);
+        return global;
     }
 
     /**
@@ -70,16 +81,12 @@ public class Environment
      */
     public int getVariable(String variable)
     {
-        Environment global = this;
-        while (global != null && !global.hasVariable(variable))
-        {
-            global = global.parent;
-        }
-        if (global == null)
+        Environment env = getHasVarEnvironment(variable);
+        if (env == null)
         {
             return 0;
         }
-        return global.variables.get(variable);
+        return env.variables.get(variable);
     }
 
     /**
@@ -110,7 +117,7 @@ public class Environment
         getGlobalEnvironment().procedures.put(procedureName, procedure);
     }
 
-        /**
+    /**
      * Keeps going up the hierarchy until global environment reached
      * @return the global environment
      */

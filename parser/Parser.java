@@ -107,7 +107,7 @@ public class Parser
             eat(currToken);
             if (currToken.equals("("))
             {
-                List<Expression> args = new ArrayList<>();
+                List<Expression> args = new ArrayList<Expression>();
                 eat("(");
                 if (!currToken.equals(")"))
                 {

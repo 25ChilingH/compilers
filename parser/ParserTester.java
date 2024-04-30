@@ -19,7 +19,7 @@ public class ParserTester
     /**
      * Default file path to parse
      */
-    public static final String FILE_PATH = "./parser/parserTest8_5.txt";
+    public static final String FILE_PATH = "./parser/parserTest7.txt";
 
     /**
      * Main method that will run the tester on the Parser class
