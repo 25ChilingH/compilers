@@ -1,5 +1,6 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -39,5 +40,16 @@ public class Assignment extends Statement
     public String getVariable()
     {
         return var;
+    }
+
+    /**
+     * Compile behavior of the Assignment statement
+     * @param e emitter that deals with the MIPS asm file
+     */
+    public void compile(Emitter e)
+    {
+        exp.compile(e);
+        e.emit("la $t0 var" + var);
+        e.emit("sw $v0 ($t0)");
     }
 }

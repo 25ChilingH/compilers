@@ -2,6 +2,7 @@ package ast;
 
 import java.util.Scanner;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -32,5 +33,17 @@ public class Readln extends Statement
         int val = scan.nextInt();
         env.setVariable(var, val);
         scan.close();
+    }
+
+    /**
+     * Compile behavior of the Readln statement
+     * @param e emitter that deals with the asm file
+     */
+    public void compile(Emitter e)
+    {
+        e.emit("li $v0 5");
+        e.emit("syscall");
+        e.emit("la $t0 var" + var);
+        e.emit("sw $v0 ($t0)");
     }
 }

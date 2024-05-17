@@ -1,5 +1,6 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -28,6 +29,16 @@ public class Variable extends Expression
     public int eval(Environment env)
     {
         return env.getVariable(name);
+    }
+
+    /**
+     * Compile behavior of the Variable expression
+     * @param e emitter that deals with the asm file
+     */
+    public void compile(Emitter e)
+    {
+        e.emit("la $t0 var" + name);
+        e.emit("lw $v0 ($t0)");
     }
     
 }

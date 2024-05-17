@@ -227,6 +227,27 @@ public class Parser
     }
 
     /**
+     * @return statement representing Var declaration
+     * @throws ScanErrorException if the expected character does not match
+     *                            the current character
+     */
+    public Var parseVar() throws ScanErrorException
+    {
+        List<String> names = new ArrayList<>();
+        eat("VAR");
+        names.add(currToken);
+        eat(currToken);
+        while (!currToken.equals(";"))
+        {
+            eat(",");
+            names.add(currToken);
+            eat(currToken);
+        }
+        eat(";");
+        return new Var(names);
+    }
+
+    /**
      * 
      * @return statement representing a Readln statement
      * @throws ScanErrorException if the expected character does not match
@@ -396,12 +417,17 @@ public class Parser
      */
     public Program parseProgram() throws ScanErrorException
     {
+        List<Var> vars = new ArrayList<>();
+        while (currToken.equals("VAR"))
+        {
+            vars.add(parseVar());
+        }
         List<ProcedureDeclaration> procedures = new ArrayList<>();
         while (currToken.equals("PROCEDURE"))
         {
             procedures.add(parseProcedure());
         }
         Statement stmt = parseStatement();
-        return new Program(procedures, stmt);
+        return new Program(vars, procedures, stmt);
     }
 }

@@ -1,5 +1,6 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -58,5 +59,42 @@ public class Condition extends Expression
             return (exp1.eval(env) >= exp2.eval(env)) ? 1 : 0;
         }
         
+    }
+
+    /**
+     * Compile behavior of the Condition expression
+     * @param e emitter that deals with the asm file
+     * @param targetLabel the label to branch to if the condition is false
+     */
+    public void compile(Emitter e, String targetLabel)
+    {
+        exp1.compile(e);
+        e.emitPush("$v0");
+        exp2.compile(e);
+        e.emitPop("$t1");
+        if (relop.equals("="))
+        {
+            e.emit("bne $t1 $v0 " + targetLabel);
+        }
+        else if (relop.equals("<>"))
+        {
+            e.emit("beq $t1 $v0 " + targetLabel);
+        }
+        else if (relop.equals("<"))
+        {
+            e.emit("bge $t1 $v0 " + targetLabel);
+        }
+        else if (relop.equals(">"))
+        {
+            e.emit("ble $t1 $v0 " + targetLabel);
+        }
+        else if (relop.equals("<="))
+        {
+            e.emit("bgt $t1 $v0 " + targetLabel);
+        }
+        else
+        {
+            e.emit("blt $t1 $v0 " + targetLabel);
+        }
     }
 }

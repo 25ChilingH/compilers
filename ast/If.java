@@ -1,5 +1,6 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -51,5 +52,19 @@ public class If extends Statement
         {
             stmt2.exec(env);
         }
+    }
+
+    /**
+     * Compile behavior of the If statement
+     * @param e emitter that deals with the asm file
+     */
+    public void compile(Emitter e)
+    {
+        int labelID = e.nextLabelID();
+        cond.compile(e, "endif" + labelID);
+        stmt1.compile(e);
+        e.emit("endif" + labelID + ":");
+        if (stmt2 != null)
+            stmt2.compile(e);
     }
 }

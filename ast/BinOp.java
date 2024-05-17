@@ -1,5 +1,6 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -49,6 +50,34 @@ public class BinOp extends Expression
         else
         {
             return exp1.eval(env) / exp2.eval(env);
+        }
+    }
+
+    /**
+     * Compile behavior of the BinOp expression
+     * @param e emitter that deals with the MIPS asm file
+     */
+    public void compile(Emitter e)
+    {
+        exp1.compile(e);
+        e.emitPush("$v0");
+        exp2.compile(e);
+        e.emitPop("$t1");
+        if (op.equals("+"))
+        {
+            e.emit("addu $v0 $v0 $t1");
+        }
+        else if (op.equals("-"))
+        {
+            e.emit("subu $v0 $v0 $t1");
+        }
+        else if (op.equals("*"))
+        {
+            e.emit("mul $v0 $v0 $t1");
+        }
+        else
+        {
+            e.emit("div $v0 $v0 $t1");
         }
     }
 }

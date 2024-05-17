@@ -1,5 +1,6 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -33,5 +34,19 @@ public class While extends Statement
         {
             stmt.exec(env);
         }
+    }
+
+    /**
+     * Compile behavior of the While statement
+     * @param e emitter that deals with the asm file
+     */
+    public void compile(Emitter e)
+    {
+        int labelID = e.nextLabelID();
+        e.emit("while" + labelID + ":");
+        cond.compile(e, "endwhile" + labelID);
+        stmt.compile(e);
+        e.emit("j while" + labelID);
+        e.emit("endwhile" + labelID + ":");
     }
 }

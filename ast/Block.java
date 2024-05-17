@@ -1,6 +1,7 @@
 package ast;
 import java.util.*;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -30,6 +31,18 @@ public class Block extends Statement
         for (Statement s: stmts)
         {
             s.exec(env);
+        }
+    }
+
+    /**
+     * Compile behavior of the Block expression
+     * @param e emitter that deals with the MIPS asm file
+     */
+    public void compile(Emitter e)
+    {
+        for (Statement s: stmts)
+        {
+            s.compile(e);
         }
     }
 }

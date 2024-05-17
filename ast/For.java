@@ -1,5 +1,6 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -35,8 +36,8 @@ public class For extends Statement
     {
         assign.exec(env);
         String varName = assign.getVariable();
-        int limit = check.eval(env);
         env.setVariable(varName, env.getVariable(assign.getVariable()));
+        int limit = check.eval(env);
 
         if (env.getVariable(varName) > limit)
         {
@@ -54,5 +55,25 @@ public class For extends Statement
                 env.setVariable(varName, env.getVariable(varName) + 1);
             }
         }
+    }
+
+    /**
+     * Compile behavior of the For statement
+     * @param e emitter that deals with the asm file
+     */
+    public void compile(Emitter e)
+    {
+        assign.compile(e);
+        int labelId = e.nextLabelID();
+        e.emit("for" + labelId + ":");
+        e.emit("lw $t1 var" + assign.getVariable()); // counter
+        check.compile(e); // limit
+        e.emit("bgt $t1 $v0 endfor" + labelId);
+        block.compile(e);
+        e.emit("lw $t1 var" + assign.getVariable()); // counter
+        e.emit("addu $t1 $t1 1"); // increment counter
+        e.emit("sw $t1 var" + assign.getVariable());
+        e.emit("j for" + labelId);
+        e.emit("endfor" + labelId + ":");
     }
 }

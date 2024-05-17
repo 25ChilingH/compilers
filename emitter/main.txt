@@ -1,0 +1,67 @@
+	.data
+	newline: .asciiz "\n"
+	.text
+	.globl main
+main:
+	li $v0 14
+	subu $sp $sp 4
+	sw $v0 ($sp)
+	li $v0 14
+	lw $t1 ($sp)
+	addu $sp $sp 4
+	bne $t1 $v0 endif1
+	li $v0 14
+	subu $sp $sp 4
+	sw $v0 ($sp)
+	li $v0 14
+	lw $t1 ($sp)
+	addu $sp $sp 4
+	beq $t1 $v0 endif2
+	li $v0 3
+	move $a0 $v0
+	li $v0 1
+	syscall
+	la $a0 newline
+	li $v0 4
+	syscall
+endif2:
+	li $v0 2
+	move $a0 $v0
+	li $v0 1
+	syscall
+	la $a0 newline
+	li $v0 4
+	syscall
+	li $v0 14
+	subu $sp $sp 4
+	sw $v0 ($sp)
+	li $v0 14
+	lw $t1 ($sp)
+	addu $sp $sp 4
+	bgt $t1 $v0 endif3
+	li $v0 4
+	move $a0 $v0
+	li $v0 1
+	syscall
+	la $a0 newline
+	li $v0 4
+	syscall
+endif3:
+endif1:
+	li $v0 15
+	subu $sp $sp 4
+	sw $v0 ($sp)
+	li $v0 14
+	lw $t1 ($sp)
+	addu $sp $sp 4
+	ble $t1 $v0 endif4
+	li $v0 5
+	move $a0 $v0
+	li $v0 1
+	syscall
+	la $a0 newline
+	li $v0 4
+	syscall
+endif4:
+	li $v0 10
+	syscall

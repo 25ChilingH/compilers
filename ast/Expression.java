@@ -1,5 +1,6 @@
 package ast;
 
+import emitter.Emitter;
 import environment.Environment;
 
 /**
@@ -15,5 +16,14 @@ public abstract class Expression
      * @return numerical equivalent of the expression
      */
     public abstract int eval(Environment env);
+
+    /**
+     * Compile behavior of the Expression
+     * @param e emitter that all MIPS instructions will use to write to a file
+     */
+    public void compile(Emitter e)
+    {
+        throw new RuntimeException("Implement me!");
+    }
 
 }
