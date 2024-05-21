@@ -1,67 +1,108 @@
 	.data
 	newline: .asciiz "\n"
+	varcount: .word 0
+	varignore: .word 0
+	vartimes: .word 0
 	.text
 	.globl main
 main:
-	li $v0 14
+	li $v0 196
+	la $t0 varcount
+	sw $v0 ($t0)
+	li $v0 0
+	la $t0 vartimes
+	sw $v0 ($t0)
+	subu $sp $sp 4
+	sw $ra ($sp)
+	li $v0 10
 	subu $sp $sp 4
 	sw $v0 ($sp)
-	li $v0 14
-	lw $t1 ($sp)
-	addu $sp $sp 4
-	bne $t1 $v0 endif1
-	li $v0 14
+	li $v0 13
 	subu $sp $sp 4
 	sw $v0 ($sp)
-	li $v0 14
-	lw $t1 ($sp)
+	jal procprintSquares
+	lw $t0 ($sp)
 	addu $sp $sp 4
-	beq $t1 $v0 endif2
-	li $v0 3
+	lw $t0 ($sp)
+	addu $sp $sp 4
+	lw $ra ($sp)
+	addu $sp $sp 4
+	la $t0 varignore
+	sw $v0 ($t0)
+	la $t0 varcount
+	lw $v0 ($t0)
 	move $a0 $v0
 	li $v0 1
 	syscall
 	la $a0 newline
 	li $v0 4
 	syscall
-endif2:
-	li $v0 2
+	la $t0 vartimes
+	lw $v0 ($t0)
 	move $a0 $v0
 	li $v0 1
 	syscall
 	la $a0 newline
 	li $v0 4
 	syscall
-	li $v0 14
-	subu $sp $sp 4
-	sw $v0 ($sp)
-	li $v0 14
-	lw $t1 ($sp)
-	addu $sp $sp 4
-	bgt $t1 $v0 endif3
-	li $v0 4
-	move $a0 $v0
-	li $v0 1
-	syscall
-	la $a0 newline
-	li $v0 4
-	syscall
-endif3:
-endif1:
-	li $v0 15
-	subu $sp $sp 4
-	sw $v0 ($sp)
-	li $v0 14
-	lw $t1 ($sp)
-	addu $sp $sp 4
-	ble $t1 $v0 endif4
-	li $v0 5
-	move $a0 $v0
-	li $v0 1
-	syscall
-	la $a0 newline
-	li $v0 4
-	syscall
-endif4:
 	li $v0 10
 	syscall
+procprintSquares:
+	subu $sp $sp 4
+	sw $zero ($sp)
+	subu $sp $sp 4
+	sw $zero ($sp)
+	subu $sp $sp 4
+	sw $zero ($sp)
+	lw $v0 16($sp)
+	sw $v0 8($sp)
+while1:
+	lw $v0 8($sp)
+	subu $sp $sp 4
+	sw $v0 ($sp)
+	lw $v0 16($sp)
+	lw $t1 ($sp)
+	addu $sp $sp 4
+	bgt $t1 $v0 endwhile1
+	lw $v0 8($sp)
+	subu $sp $sp 4
+	sw $v0 ($sp)
+	lw $v0 12($sp)
+	lw $t1 ($sp)
+	addu $sp $sp 4
+	mul $v0 $v0 $t1
+	sw $v0 4($sp)
+	lw $v0 4($sp)
+	move $a0 $v0
+	li $v0 1
+	syscall
+	la $a0 newline
+	li $v0 4
+	syscall
+	lw $v0 8($sp)
+	subu $sp $sp 4
+	sw $v0 ($sp)
+	li $v0 1
+	lw $t1 ($sp)
+	addu $sp $sp 4
+	addu $v0 $v0 $t1
+	sw $v0 8($sp)
+	la $t0 vartimes
+	lw $v0 ($t0)
+	subu $sp $sp 4
+	sw $v0 ($sp)
+	li $v0 1
+	lw $t1 ($sp)
+	addu $sp $sp 4
+	addu $v0 $v0 $t1
+	la $t0 vartimes
+	sw $v0 ($t0)
+	j while1
+endwhile1:
+	lw $t0 ($sp)
+	addu $sp $sp 4
+	lw $t0 ($sp)
+	addu $sp $sp 4
+	lw $v0 ($sp)
+	addu $sp $sp 4
+	jr $ra

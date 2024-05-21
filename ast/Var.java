@@ -27,6 +27,15 @@ public class Var extends Statement
     }
 
     /**
+     * 
+     * @return the list of variable names
+     */
+    public List<String> getNames()
+    {
+        return names;
+    }
+
+    /**
      * Execution behavior of the Var statement
      * @param env environment where all variable values are stored
      */
@@ -46,7 +55,14 @@ public class Var extends Statement
     {
         for (String n: names)
         {
-            e.emit("var" + n + ": .word 0");
+            if (e.isLocalVariable(n))
+            {
+                e.emitPush("$zero");
+            }
+            else
+            {
+                e.emit("var" + n + ": .word 0");
+            }
         }
     }
 }

@@ -1,5 +1,9 @@
 package emitter;
 import java.io.*;
+import java.util.List;
+
+import ast.ProcedureDeclaration;
+import ast.Var;
 
 /**
  * A simple class that allows you to write to a file. Our compiler will use it to output
@@ -12,6 +16,8 @@ public class Emitter
 {
     private PrintWriter out;
     private int id;
+    private ProcedureDeclaration currContext;
+    private int excessStackHeight;
 
     /**
      * Creates an emitter for writing to a new file with given name
@@ -46,6 +52,7 @@ public class Emitter
      */
     public void emitPush(String reg)
     {
+        excessStackHeight++;
         emit("subu $sp $sp 4");
         emit("sw " + reg + " ($sp)");
     }
@@ -56,18 +63,101 @@ public class Emitter
      */
     public void emitPop(String reg)
     {
+        excessStackHeight--;
         emit("lw " + reg + " ($sp)");
         emit("addu $sp $sp 4");
     }
 
+    /**
+     * @return the id of the MIPS label 
+     */
     public int nextLabelID()
     {
         id++;
         return id;
     }
 
+
     /**
-     * Closes the file.  should be called after all calls to emit.
+     * Remember proc as the current procedure context
+     * @param proc procedure to remember as the current
+     */
+    public void setProcedureContext(ProcedureDeclaration proc)
+    {
+        excessStackHeight = 0;
+        currContext = proc;
+    }
+
+    /**
+     * Clear the current procedure context
+     */
+    public void clearProcedureContext()
+    {
+        currContext = null;
+    }
+
+    /**
+     * @param varName the variable to check if it's a local variable in the
+     *                current procedure context
+     * @return true if the variable is a local variable in the current procedure context;
+     *         false otherwise
+     */
+    public boolean isLocalVariable(String varName)
+    {
+        if (currContext != null)
+        {
+            if (varName.equals(currContext.getName()))
+            {
+                return true;
+            }
+            List<String> params = currContext.getParams();
+            for (String param: params)
+            {
+                if (param.equals(varName))
+                {
+                    return true;
+                }
+            }
+            Var vars = currContext.getVars();
+            for (String s: vars.getNames())
+            {
+                if (s.equals(varName))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @precondition localVarName is the name of a local variable
+     *               for the procedure currently being compiled 
+     * @param localVarName the variable to find the offset of the stack pointer from
+     * @return the offset from $sp
+     */
+    public int getOffset(String localVarName)
+    {
+        List<String> params = currContext.getParams();
+        List<String> localVars = currContext.getVars().getNames();
+        int idxParam = params.indexOf(localVarName);
+        if (idxParam == -1)
+        {
+            if (localVarName.equals(currContext.getName()))
+            {
+                return (excessStackHeight - 1) * 4;
+            }
+            else
+            {
+                int idxVars = localVars.indexOf(localVarName);
+                return (excessStackHeight - idxVars - 1) * 4;
+            }
+        }
+        return (excessStackHeight + params.size() - idxParam - 1) * 4;
+    }
+
+    /**
+     * Closes the file. Should be called after all calls to emit.
      */
     public void close()
     {

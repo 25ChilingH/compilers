@@ -1,28 +1,20 @@
-VAR x, y, sum, i, b;
+VAR count, ignore, times;
+PROCEDURE printSquares(low, high);
+VAR count, square;
 BEGIN
-	x := 2;
-	y := x + (3 * x);
-	x := x + y;
-	WRITELN(x * y);
-	IF x > y THEN 
-	BEGIN
-		WRITELN(x);
-		WRITELN(y);
-	END;
-	x := 0;
-	WHILE x < 8 DO
-	BEGIN
-		WRITELN(x);
-		x := x + 2;
-	END;
-	sum := 0;	
-	FOR i := 1 TO 5 DO
-	BEGIN
-		sum := sum + i;
-		WRITELN(sum);
-	END;
-	READLN(b);
-	IF b < 10 THEN
-		WRITELN(b);
+count := low;
+WHILE count <= high DO
+BEGIN
+square := count * count;
+WRITELN(square);
+count := count + 1;
+times := times + 1;
 END;
-.
+END;
+BEGIN 
+count := 196;
+times := 0;
+ignore := printSquares(10, 13);
+WRITELN(count);
+WRITELN(times);
+END; 

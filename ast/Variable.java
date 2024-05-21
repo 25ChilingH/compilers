@@ -37,8 +37,15 @@ public class Variable extends Expression
      */
     public void compile(Emitter e)
     {
-        e.emit("la $t0 var" + name);
-        e.emit("lw $v0 ($t0)");
+        if (e.isLocalVariable(name))
+        {
+            e.emit("lw $v0 " + e.getOffset(name) + "($sp)");
+        }
+        else
+        {
+            e.emit("la $t0 var" + name);
+            e.emit("lw $v0 ($t0)");
+        }
     }
     
 }

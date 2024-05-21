@@ -404,8 +404,13 @@ public class Parser
 
         eat(")");
         eat(";");
+        Var vars = new Var(new ArrayList<String>());
+        if (currToken.equals("VAR"))
+        {
+            vars = parseVar();
+        }
         Statement procedureStmt = parseStatement();
-        return new ProcedureDeclaration(procedureName, procedureStmt, params);
+        return new ProcedureDeclaration(procedureName, vars, procedureStmt, params);
     }
 
     /**

@@ -24,7 +24,7 @@ public class EmitterTester
     /**
      * Default file path of PASCAL code
      */
-    public static final String FILE_PATH = "./emitter/emitterTest1.txt";
+    public static final String FILE_PATH = "./emitter/customTest.txt";
 
     /**
      * Main method that will run the tester on the Emitter class

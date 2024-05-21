@@ -64,6 +64,9 @@ public class Program
         emitter.emit("li $v0 10");
         emitter.emit("syscall");
 
+        for (ProcedureDeclaration p: procedures)
+            p.compile(emitter);
+
         emitter.close();
     }
 }

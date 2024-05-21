@@ -49,7 +49,14 @@ public class Assignment extends Statement
     public void compile(Emitter e)
     {
         exp.compile(e);
-        e.emit("la $t0 var" + var);
-        e.emit("sw $v0 ($t0)");
+        if (e.isLocalVariable(var))
+        {
+            e.emit("sw $v0 " + e.getOffset(var) + "($sp)");
+        }
+        else
+        {
+            e.emit("la $t0 var" + var);
+            e.emit("sw $v0 ($t0)");
+        }
     }
 }
